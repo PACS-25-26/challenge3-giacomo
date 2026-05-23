@@ -1,9 +1,11 @@
 #include <cmath>
 #include <limits>
 #include <stdexcept>
-#include <eigen>
 #include <mpi.h>
 #include <omp.h>
+#include <Eigen/Dense>
+#include <vector>
+#include <functional  //    DA METTERE IN MAKEFILE
 
 using namespace Eigen;
 
@@ -16,12 +18,14 @@ MatrixRowMaj jacobi(double tol, int num_elem, int max_iters, double x_iniz, doub
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    double n = sqrt(num_elem);
+    double n = std::sqrt(num_elem);
     double h = (x_fin-x_iniz) / (n-1);
+    double coeff = 1 / (4*h*h);
 
     //computation of local rows for each processor
     int base_rows = n / size;
-    int remainder = n % size;
+    int reminder = n % size;
+    int local_rows=0;
     if (rank < reminder){       //some processor will have a row more
         local_rows = base_rows+1;
     }
@@ -56,8 +60,7 @@ MatrixRowMaj jacobi(double tol, int num_elem, int max_iters, double x_iniz, doub
     U_loc1.setZero();
 
     //scatterv
-    MPI_Scatterv(U_global.data(), sendcounts.data(), displs.data(), MPI_DOUBLE, &U_local(1, 0), local_rows * n, MPI_DOUBLE, 
-        0, comm);
+    MPI_Scatterv(U_global.data(), sendcounts.data(), displs.data(), MPI_DOUBLE, &U_loc0(1, 0), local_rows * n, MPI_DOUBLE, 0, comm);
 
     //neighbours definition for rows comunications
     int up_neighbor   = (rank == 0) ? MPI_PROC_NULL : rank - 1;
@@ -68,8 +71,8 @@ MatrixRowMaj jacobi(double tol, int num_elem, int max_iters, double x_iniz, doub
     int end_i   = (rank == size - 1) ? local_rows - 1 : local_rows;
 
     int k = 0;
-    int flag=0;
-    while (!flag && k<max_iters){
+    int flag_glob=0;
+    while (!flag_glob && k<max_iters){
         //communication between processors, two steps to avoid deadlocks
         if (rank % 2 == 0) {
             MPI_Send(&U_loc0(local_rows, 0), n, MPI_DOUBLE, down_neighbor, 0, comm);
@@ -92,18 +95,17 @@ MatrixRowMaj jacobi(double tol, int num_elem, int max_iters, double x_iniz, doub
         #pragma omp parallel for 
         for (int i = start_i; i <= end_i; i++) {
             for (int j = 1; j < n - 1; j++) {
-                int global_i = (rank == 0 ? 0 : displs[rank]/n) + (i - 1); 
-                
+                int global_i = (displs[rank] / n) + (i - 1);                
                 U_loc1(i, j) = coeff * ( U_loc0(i - 1, j) + U_loc0(i + 1, j) + 
                                         U_loc0(i, j - 1) + U_loc0(i, j + 1) + 
-                                        f(global_i+x_iniz, j+y_iniz) );
+                                        f(j*h + x_iniz, global_i*h + y_iniz) );
             }
         }
 
         //error and update
         k++;
-        int loc_sum = 0;
-        #pragma omp parallel for 
+        double loc_sum = 0;
+        #pragma omp parallel for reduction(+:loc_sum)
         for (int i = start_i; i <= end_i; i++) {
             for (int j = 1; j < n - 1; j++) {
                 double diff = U_loc1(i, j) - U_loc0(i, j);
@@ -114,16 +116,17 @@ MatrixRowMaj jacobi(double tol, int num_elem, int max_iters, double x_iniz, doub
             }
         }
         double err = std::sqrt(h * loc_sum);
+        int flag=0;
         if (err<tol){
             flag=1;
         }
-        MPI_Allreduce(&flag, &flag, 1, MPI_DOUBLE, MPI_PROD, comm);
+        MPI_Allreduce(&flag, &flag_glob, 1, MPI_INT, MPI_PROD, comm);
 
     }
 
     MPI_Gatherv(&U_local(1, 0), local_rows * n, MPI_DOUBLE, U_global.data(), sendcounts.data(), displs.data(), MPI_DOUBLE,0, comm);
 
-    return U_glob;
+    return U_global;
 }
 
 //function to construct global U0, according to bc by g
@@ -136,8 +139,8 @@ void initializeBC(std::function<double(double, double)> g, MatrixRowMaj& u, doub
     }
 
     #pragma omp parallel for
-    for (int i = 0; i < n ; i++) {
-        u(i,0) = g(x_iniz, y_iniz+j*h);
-        u(i,n-1) = g(x_iniz+n*h, y_iniz+j*h);
+    for (int j = 0; j < n ; j++) {
+        u(j,0) = g(x_iniz, y_iniz+j*h);
+        u(j,n-1) = g(x_iniz+n*h, y_iniz+j*h);
     }
 }
