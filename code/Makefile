@@ -4,8 +4,7 @@ mkEigenInc = -I/usr/include/eigen3
 CXXFLAGS = -std=c++20 -Wall -Wextra -O3 -Iinclude -fopenmp $(mkEigenInc)
 
 LDFLAGS = -fopenmp
-
-# LDFLAGS += -lmuparser
+LDFLAGS += -lmuparser
 
 SRC_DIR = src
 INC_DIR = include
@@ -44,4 +43,4 @@ clean:
 
 .PHONY: run
 run: $(EXEC)
-	OMP_NUM_THREADS=2 mpirun -n 2 ./$(EXEC) 100 2
+	OMP_NUM_THREADS=2 mpirun -n 4 ./$(EXEC) -f parameters.pot

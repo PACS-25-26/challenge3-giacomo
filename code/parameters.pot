@@ -1,0 +1,5 @@
+[Jacobi_solver_parameters]
+num_elements = 100
+max_iters = 10000
+tolerance = 1e-4
+forcing_term = '8*pi*pi*sin(2*pi*x)*sin(2*pi*y)'
