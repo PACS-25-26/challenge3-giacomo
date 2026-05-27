@@ -1,0 +1,71 @@
+\doxysection{forcing\+\_\+parser.\+hpp}
+\hypertarget{forcing__parser_8hpp_source}{}\label{forcing__parser_8hpp_source}\index{include/forcing\_parser.hpp@{include/forcing\_parser.hpp}}
+\mbox{\hyperlink{forcing__parser_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ FORCING\_PARSER\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ FORCING\_PARSER\_HPP}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}muParser.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}mpi.h"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00020\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceutils}{utils}}\ \{}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classutils_1_1ForcingFunction}{ForcingFunction}}\ \{}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ std::string\ expression;}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ get\_mpi\_rank()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ rank\ =\ 0;}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ mpi\_initialized\ =\ 0;}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \ \ \ \ MPI\_Initialized(\&mpi\_initialized);}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (mpi\_initialized)\ \{}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ MPI\_Comm\_rank(MPI\_COMM\_WORLD,\ \&rank);}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ rank;}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classutils_1_1ForcingFunction_aa775259d9c76abfe62944cbe871e77bd}{ForcingFunction}}()\ :\ expression(\textcolor{stringliteral}{"{}0.0"{}})\ \{\}}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classutils_1_1ForcingFunction_a02ac5ce2396d639f48df89d0bfb85bef}{ForcingFunction}}(\textcolor{keyword}{const}\ std::string\&\ expr)\ :\ expression(expr)\ \{\}}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classutils_1_1ForcingFunction_ad6fb555d00dc7530cacd0744290ced64}{operator()}}(\textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ y)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{thread\_local}\ mu::Parser\ local\_parser;}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{thread\_local}\ \textcolor{keywordtype}{double}\ local\_x\ =\ 0.0;}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{thread\_local}\ \textcolor{keywordtype}{double}\ local\_y\ =\ 0.0;}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{thread\_local}\ \textcolor{keywordtype}{bool}\ initialized\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!initialized)\ \{}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}\ \{}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ local\_parser.SetExpr(expression);}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ local\_parser.DefineVar(\textcolor{stringliteral}{"{}x"{}},\ \&local\_x);}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ local\_parser.DefineVar(\textcolor{stringliteral}{"{}y"{}},\ \&local\_y);}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ local\_parser.DefineConst(\textcolor{stringliteral}{"{}pi"{}},\ M\_PI);}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ initialized\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{catch}\ (mu::Parser::exception\_type\ \&e)\ \{}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}[Rank\ "{}}\ <<\ get\_mpi\_rank()\ <<\ \textcolor{stringliteral}{"{}]\ muParser\ initialization\ error:\ "{}}\ }
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ e.GetMsg()\ <<\ std::endl;}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ MPI\_Abort(MPI\_COMM\_WORLD,\ 1);}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \ \ \ \ local\_x\ =\ x;}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \ \ \ \ local\_y\ =\ y;}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}\ \{}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ local\_parser.Eval();}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{catch}\ (mu::Parser::exception\_type\ \&e)\ \{}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}[Rank\ "{}}\ <<\ get\_mpi\_rank()\ <<\ \textcolor{stringliteral}{"{}]\ muParser\ evaluation\ error:\ "{}}\ }
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ e.GetMsg()\ <<\ std::endl;}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ 0.0;}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00103\ \ \ \ \ \};}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \}\ \textcolor{comment}{//\ namespace\ utils}}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ FORCING\_PARSER\_HPP}}
+
+\end{DoxyCode}

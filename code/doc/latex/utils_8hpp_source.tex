@@ -1,0 +1,56 @@
+\doxysection{utils.\+hpp}
+\hypertarget{utils_8hpp_source}{}\label{utils_8hpp_source}\index{include/utils.hpp@{include/utils.hpp}}
+\mbox{\hyperlink{utils_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\ \ \ \ \#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\ \ \ \ \#ifndef\ UTILS\_HPP}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\ \ \ \ \#define\ UTILS\_HPP}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\ \ \ \ \#include\ <cmath>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\ \ \ \ \#include\ <limits>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\ \ \ \ \#include\ <stdexcept>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\ \ \ \ \#include\ <mpi.h>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\ \ \ \ \#include\ <omp.h>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\ \ \ \ \#include\ <Eigen/Dense>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\ \ \ \ \#include\ <vector>}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\ \ \ \ \#include\ <functional>}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\ \ \ \ \#include\ "{}\mbox{\hyperlink{jacobi__solver_8hpp}{jacobi\_solver.hpp}}"{}}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceparallel__jacobi}{parallel\_jacobi}}\{}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{namespaceparallel__jacobi_ad499608bdbe2d227b9cb0022a1c1ed13}{exact\_solution}}(\textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ y)\{}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::sin(2.0\ *\ M\_PI\ *\ x)\ *\ std::sin(2.0\ *\ M\_PI\ *\ y);}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{namespaceparallel__jacobi_a14842639e2e86574e95ceaf08cf5ba42}{forcing\_term}}(\textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ y)\{}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ 8.0\ *\ M\_PI\ *\ M\_PI\ *\ std::sin(2.0\ *\ M\_PI\ *\ x)\ *\ std::sin(2.0\ *\ M\_PI\ *\ y);}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{namespaceparallel__jacobi_ab8179e9ce78e2b6fa4e0903738a6602c}{boundary\_condition}}(\textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ y)\{}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ 0.0;}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{namespaceparallel__jacobi_ab7fa537af8e7f2ffc2da6ae8b68a6054}{compute\_L2\_error}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{namespaceparallel__jacobi_ab5c561662ce0d744055ad8395c9f672d}{MatrixRowMaj}}\ U,}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ n,\ \textcolor{keywordtype}{double}\ h,\ \textcolor{keywordtype}{double}\ x\_iniz,\ \textcolor{keywordtype}{double}\ y\_iniz,}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::function<\textcolor{keywordtype}{double}(\textcolor{keywordtype}{double},\ \textcolor{keywordtype}{double})>\ exact\_u)\{}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ sum\ =\ 0.0;}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 1;\ i\ <\ n\ -\/\ 1;\ i++)\ \{}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ 1;\ j\ <\ n\ -\/\ 1;\ j++)\ \{}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ x\_val\ =\ x\_iniz\ +\ j\ *\ h;}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ y\_val\ =\ y\_iniz\ +\ i\ *\ h;}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ diff\ =\ U(i,\ j)\ -\/\ exact\_u(x\_val,\ y\_val);}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sum\ +=\ (diff\ *\ diff);}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::sqrt(h\ *\ sum);}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00094\ \ \ \ \ \}}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \textcolor{preprocessor}{\ \ \ \ \#endif}}
+
+\end{DoxyCode}

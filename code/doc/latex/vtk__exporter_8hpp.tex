@@ -1,0 +1,32 @@
+\doxysection{include/vtk\+\_\+exporter.hpp File Reference}
+\hypertarget{vtk__exporter_8hpp}{}\label{vtk__exporter_8hpp}\index{include/vtk\_exporter.hpp@{include/vtk\_exporter.hpp}}
+
+
+Utility function to export 2D simulation data to VTK Legacy format.  
+
+
+{\ttfamily \#include "{}jacobi\+\_\+solver.\+hpp"{}}\newline
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$fstream$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+Include dependency graph for vtk\+\_\+exporter.\+hpp\+:
+% FIG 0
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \mbox{\hyperlink{namespaceparallel__jacobi}{parallel\+\_\+jacobi}}
+\begin{DoxyCompactList}\small\item\em Namespace housing the parallel Jacobi solver implementation and related types. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{namespaceparallel__jacobi_a4350d83a5138f18b9691ce9eae0a7e3f}{parallel\+\_\+jacobi\+::export\+\_\+vtk}} (const std\+::string \&filename, const \mbox{\hyperlink{namespaceparallel__jacobi_ab5c561662ce0d744055ad8395c9f672d}{Matrix\+Row\+Maj}} \&U, int n, double x\+\_\+iniz, double y\+\_\+iniz, double h)
+\begin{DoxyCompactList}\small\item\em Exports a 2D matrix solution to an ASCII VTK Legacy structured points file. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Utility function to export 2D simulation data to VTK Legacy format. 
+
+
+\begin{DoxyItemize}
+\item Allows visualization of the calculated potential fields or system profiles using post-\/processing software such as Para\+View or Vis\+It. 
+\end{DoxyItemize}

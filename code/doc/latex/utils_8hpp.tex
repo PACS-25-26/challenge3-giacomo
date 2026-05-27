@@ -1,0 +1,43 @@
+\doxysection{include/utils.hpp File Reference}
+\hypertarget{utils_8hpp}{}\label{utils_8hpp}\index{include/utils.hpp@{include/utils.hpp}}
+
+
+Mathematical utility functions and error metrics for verification.  
+
+
+{\ttfamily \#include $<$cmath$>$}\newline
+{\ttfamily \#include $<$limits$>$}\newline
+{\ttfamily \#include $<$stdexcept$>$}\newline
+{\ttfamily \#include $<$mpi.\+h$>$}\newline
+{\ttfamily \#include $<$omp.\+h$>$}\newline
+{\ttfamily \#include $<$Eigen/\+Dense$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$functional$>$}\newline
+{\ttfamily \#include "{}jacobi\+\_\+solver.\+hpp"{}}\newline
+Include dependency graph for utils.\+hpp\+:
+% FIG 0
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \mbox{\hyperlink{namespaceparallel__jacobi}{parallel\+\_\+jacobi}}
+\begin{DoxyCompactList}\small\item\em Namespace housing the parallel Jacobi solver implementation and related types. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+double \mbox{\hyperlink{namespaceparallel__jacobi_ad499608bdbe2d227b9cb0022a1c1ed13}{parallel\+\_\+jacobi\+::exact\+\_\+solution}} (double x, double y)
+\begin{DoxyCompactList}\small\item\em Computes the analytical exact solution for the benchmark problem. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{namespaceparallel__jacobi_a14842639e2e86574e95ceaf08cf5ba42}{parallel\+\_\+jacobi\+::forcing\+\_\+term}} (double x, double y)
+\begin{DoxyCompactList}\small\item\em Computes the analytical forcing term (RHS) corresponding to the exact solution. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{namespaceparallel__jacobi_ab8179e9ce78e2b6fa4e0903738a6602c}{parallel\+\_\+jacobi\+::boundary\+\_\+condition}} (double x, double y)
+\begin{DoxyCompactList}\small\item\em Computes the Dirichlet boundary condition for the benchmark problem. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{namespaceparallel__jacobi_ab7fa537af8e7f2ffc2da6ae8b68a6054}{parallel\+\_\+jacobi\+::compute\+\_\+\+L2\+\_\+error}} (const \mbox{\hyperlink{namespaceparallel__jacobi_ab5c561662ce0d744055ad8395c9f672d}{Matrix\+Row\+Maj}} U, int n, double h, double x\+\_\+iniz, double y\+\_\+iniz, std\+::function$<$ double(double, double)$>$ exact\+\_\+u)
+\begin{DoxyCompactList}\small\item\em Calculates the global discrete \$L\texorpdfstring{$^\wedge$}{\string^}2\$ error norm of the numerical solution. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Mathematical utility functions and error metrics for verification. 
+
+
+\begin{DoxyItemize}
+\item Provides the exact analytical solution, forcing terms, boundary conditions, and validation functions used to benchmark the numerical solver. 
+\end{DoxyItemize}

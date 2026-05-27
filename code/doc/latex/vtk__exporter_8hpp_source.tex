@@ -1,0 +1,56 @@
+\doxysection{vtk\+\_\+exporter.\+hpp}
+\hypertarget{vtk__exporter_8hpp_source}{}\label{vtk__exporter_8hpp_source}\index{include/vtk\_exporter.hpp@{include/vtk\_exporter.hpp}}
+\mbox{\hyperlink{vtk__exporter_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#ifndef\ VTK\_EXPORTER\_HPP}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#define\ VTK\_EXPORTER\_HPP}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{jacobi__solver_8hpp}{jacobi\_solver.hpp}}"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <fstream>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00017\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceparallel__jacobi}{parallel\_jacobi}}\ \{}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{namespaceparallel__jacobi_a4350d83a5138f18b9691ce9eae0a7e3f}{export\_vtk}}(\textcolor{keyword}{const}\ std::string\&\ filename,\ }
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{namespaceparallel__jacobi_ab5c561662ce0d744055ad8395c9f672d}{MatrixRowMaj}}\&\ U,\ }
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ n,\ \textcolor{keywordtype}{double}\ x\_iniz,\ \textcolor{keywordtype}{double}\ y\_iniz,\ \textcolor{keywordtype}{double}\ h)\ \{}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ std::ofstream\ file(filename);}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!file.is\_open())\ \{}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}Error:\ Unable\ to\ create\ the\ file\ "{}}\ <<\ filename\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 1.\ STANDARD\ HEADER\ for\ VTK\ Legacy\ Format}}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ file\ <<\ \textcolor{stringliteral}{"{}\#\ vtk\ DataFile\ Version\ 3.0\(\backslash\)n"{}};}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ file\ <<\ \textcolor{stringliteral}{"{}Solution\ Equazione\ Poisson\ -\/\ Parallel\ Jacobi\(\backslash\)n"{}};}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ file\ <<\ \textcolor{stringliteral}{"{}ASCII\(\backslash\)n"{}};}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 2.\ DATASET\ STRUCTURED\_POINTS}}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ file\ <<\ \textcolor{stringliteral}{"{}DATASET\ STRUCTURED\_POINTS\(\backslash\)n"{}};}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ file\ <<\ \textcolor{stringliteral}{"{}DIMENSIONS\ "{}}\ <<\ n\ <<\ \textcolor{stringliteral}{"{}\ "{}}\ <<\ n\ <<\ \textcolor{stringliteral}{"{}\ 1\(\backslash\)n"{}};\ }
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ file\ <<\ \textcolor{stringliteral}{"{}ORIGIN\ "{}}\ <<\ x\_iniz\ <<\ \textcolor{stringliteral}{"{}\ "{}}\ <<\ y\_iniz\ <<\ \textcolor{stringliteral}{"{}\ 0.0\(\backslash\)n"{}};}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ file\ <<\ \textcolor{stringliteral}{"{}SPACING\ "{}}\ <<\ h\ <<\ \textcolor{stringliteral}{"{}\ "{}}\ <<\ h\ <<\ \textcolor{stringliteral}{"{}\ 1.0\(\backslash\)n"{}};}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 3.\ POINT\_DATA\ with\ scalar\ field\ "{}solution"{}}}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ file\ <<\ \textcolor{stringliteral}{"{}POINT\_DATA\ "{}}\ <<\ n\ *\ n\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ file\ <<\ \textcolor{stringliteral}{"{}SCALARS\ solution\ double\ 1\(\backslash\)n"{}};}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ file\ <<\ \textcolor{stringliteral}{"{}LOOKUP\_TABLE\ default\(\backslash\)n"{}};}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ n;\ i++)\ \{}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ 0;\ j\ <\ n;\ j++)\ \{}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ file\ <<\ U(i,\ j)\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ file.close();}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}VTK\ export\ completed\ successfully:\ "{}}\ <<\ filename\ <<\ std::endl;}
+\DoxyCodeLine{00070\ \ \ \ \ \}}
+\DoxyCodeLine{00071\ \}}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

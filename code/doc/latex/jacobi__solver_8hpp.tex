@@ -1,0 +1,39 @@
+\doxysection{include/jacobi\+\_\+solver.hpp File Reference}
+\hypertarget{jacobi__solver_8hpp}{}\label{jacobi__solver_8hpp}\index{include/jacobi\_solver.hpp@{include/jacobi\_solver.hpp}}
+
+
+Definition of the Jacobi\+Solver class for solving Poisson/\+Laplace equations in parallel.  
+
+
+{\ttfamily \#include $<$cmath$>$}\newline
+{\ttfamily \#include $<$limits$>$}\newline
+{\ttfamily \#include $<$stdexcept$>$}\newline
+{\ttfamily \#include $<$mpi.\+h$>$}\newline
+{\ttfamily \#include $<$omp.\+h$>$}\newline
+{\ttfamily \#include $<$Eigen/\+Dense$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$functional$>$}\newline
+Include dependency graph for jacobi\+\_\+solver.\+hpp\+:
+% FIG 0
+This graph shows which files directly or indirectly include this file\+:
+% FIG 1
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classparallel__jacobi_1_1JacobiSolver}{parallel\+\_\+jacobi\+::\+Jacobi\+Solver}}
+\begin{DoxyCompactList}\small\item\em A parallel 2D Jacobi iterative solver utilizing hybrid MPI + Open\+MP parallelization. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \mbox{\hyperlink{namespaceparallel__jacobi}{parallel\+\_\+jacobi}}
+\begin{DoxyCompactList}\small\item\em Namespace housing the parallel Jacobi solver implementation and related types. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+using \mbox{\hyperlink{namespaceparallel__jacobi_ab5c561662ce0d744055ad8395c9f672d}{parallel\+\_\+jacobi\+::\+Matrix\+Row\+Maj}} = Eigen\+::\+Matrix$<$ double, Eigen\+::\+Dynamic, Eigen\+::\+Dynamic, Eigen\+::\+Row\+Major $>$
+\begin{DoxyCompactList}\small\item\em Type alias for a dynamically-\/sized Eigen matrix stored in Row-\/\+Major order. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Definition of the Jacobi\+Solver class for solving Poisson/\+Laplace equations in parallel. 
+

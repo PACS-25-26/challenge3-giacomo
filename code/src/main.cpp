@@ -16,7 +16,7 @@ int main (int argc, char* argv[])
 
     // 1. GetPot initialization
     GetPot command_line(argc, argv);
-    std::string config_filename = command_line.follow("config.pot", "-f");
+    std::string config_filename = command_line.follow("parameters.pot", "-f");
     GetPot datafile(config_filename.c_str());
 
     // 2. Read parameters (the second value is the default in case of error)
