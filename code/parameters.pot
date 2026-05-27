@@ -3,3 +3,5 @@ num_elements = 100
 max_iters = 10000
 tolerance = 1e-4
 forcing_term = '8*pi*pi*sin(2*pi*x)*sin(2*pi*y)'
+boundary_condition = '0.0'
+exact_solution = 'sin(2*pi*x)*sin(2*pi*y)'

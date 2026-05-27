@@ -6,11 +6,15 @@
 #include <cmath>
 #include <limits>
 #include <stdexcept>
+#include <vector>
+#include <functional>
+#include <iostream>
+#include <string>
+#include <fstream>
 #include <mpi.h>
 #include <omp.h>
 #include <Eigen/Dense>
-#include <vector>
-#include <functional>
+
 
 /**
  * @file jacobi_solver.hpp

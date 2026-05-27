@@ -1,97 +1,139 @@
-    #pragma once
+#pragma once
 
-    #ifndef UTILS_HPP
-    #define UTILS_HPP
+#ifndef UTILS_HPP
+#define UTILS_HPP
 
-    #include <cmath>
-    #include <limits>
-    #include <stdexcept>
-    #include <mpi.h>
-    #include <omp.h>
-    #include <Eigen/Dense>
-    #include <vector>
-    #include <functional>
-    #include "jacobi_solver.hpp"
+#include "muParser.h"
+#include "jacobi_solver.hpp"
+
+/**
+ * @file utils.hpp
+ * @brief Mathematical utility functions and error metrics for verification.
+ */
+
+/**
+ * @namespace utils
+ * @brief Namespace for utility classes and helper functions.
+ */
+
+namespace utils{
 
     /**
-    * @file utils.hpp
-    * @brief Mathematical utility functions and error metrics for verification.
-    * * Provides the exact analytical solution, forcing terms, boundary conditions,
-    * and validation functions used to benchmark the numerical solver.
+     * @class Function
+     * @brief Functor to dinamically evaluate 2D mathematical expressions.
+     * * This class uses the muParser library to interpret text strings
+     * as mathematical functions f(x,y)
      */
 
-    namespace parallel_jacobi{
+    class Function {
+    private:
+        std::string expression;
 
         /**
-        * @brief Computes the analytical exact solution for the benchmark problem.
-        * * The exact solution is defined as:
-        * $$u(x, y) = \sin(2\pi x) \sin(2\pi y)$$
-        * * @param x The spatial coordinate $x$.
-        * @param y The spatial coordinate $y$.
-        * @return The exact value $u(x,y)$ as a double.
-        */
-
-        double exact_solution(double x, double y){
-            return std::sin(2.0 * M_PI * x) * std::sin(2.0 * M_PI * y);
+         * @brief Private helper function to safely retrieve the current MPI rank.
+         * * @return The MPI rank of the current process, or 0 if MPI is not initialized.
+         */
+        
+        int get_mpi_rank() const {
+            int rank = 0;
+            int mpi_initialized = 0;
+            MPI_Initialized(&mpi_initialized);
+            if (mpi_initialized) {
+                MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+            }
+            return rank;
         }
 
+    public:
         /**
-        * @brief Computes the analytical forcing term (RHS) corresponding to the exact solution.
-        * * Derived from the Poisson equation $-\nabla^2 u = f$, where applying the Laplacian 
-        * to the `exact_solution` yields the source term:
-        * $$f(x, y) = 8\pi^2 \sin(2\pi x) \sin(2\pi y)$$
-        * * @param x The spatial coordinate $x$.
-        * @param y The spatial coordinate $y$.
-        *  @return The forcing term value $f(x,y)$ as a double.
-        */
-        double forcing_term(double x, double y){
-            return 8.0 * M_PI * M_PI * std::sin(2.0 * M_PI * x) * std::sin(2.0 * M_PI * y);
-        }
+         * @brief Default constructor.
+         * Initializes the function expression to a constant "0.0".
+         */
+        Function() : expression("0.0") {}
+        /**
+         * @brief Main constructor that initializes the function with a custom expression.
+         * @param expr The string containing the mathematical expression (e.g., "sin(x)*cos(y)").
+         */
+        explicit Function(const std::string& expr) : expression(expr) {}
 
         /**
-        *  @brief Computes the Dirichlet boundary condition for the benchmark problem.
-        * * Returns a homogeneous boundary value ($g(x, y) = 0.0$) along the domain perimeter.
-        * * @param x The spatial coordinate $x$.
-        * @param y The spatial coordinate $y$.
-        * @return The boundary value as a double (always 0.0).
-        */
-        double boundary_condition(double x, double y){
-            return 0.0;
-        }
+         * @brief Overload of the call operator to evaluate the function at given coordinates.
+         * * This operator makes the class a callable Functor. It is thread-safe because 
+         * it instantiates internal parser variables as `thread_local`, allowing multiple 
+         * OpenMP threads to call it concurrently without race conditions.
+         * * If muParser initialization fails, it aborts the entire MPI environment. If evaluation 
+         * fails, it prints an error message and returns 0.0.
+         * * @param x The spatial coordinate $x$.
+         * @param y The spatial coordinate $y$.
+         * @return The evaluated result of the mathematical expression as a double.
+         */
 
-        /**
-        * @brief Calculates the global discrete $L^2$ error norm of the numerical solution.
-        * * Computes the root-mean-square difference between the calculated matrix values 
-        * and the analytical function over all internal grid nodes:
-        * ||e||_{L^2} = \sqrt{h \cdot \sum_{i,j} (U_{i,j} - u(x_i, y_j))^2}
-        * * @note This function performs a local evaluation. If used in a parallel context, 
-        * it should only be executed on the **reconstructed global matrix (Rank 0)**.
-        * * @param U The fully assembled global solution matrix of type MatrixRowMaj.
-        * @param n The total number of grid points along each 2D dimension.
-        * @param h The uniform spatial discretization mesh step size ($h = \Delta x = \Delta y$).
-        * @param x_iniz The physical starting boundary coordinate along the $X$-axis.
-        * @param y_iniz The physical starting boundary coordinate along the $Y$-axis.
-        * @param exact_u A functional reference to the analytical solution function.
-        * @return The computed discrete $L^2$ error norm as a double.
-        */
-        double compute_L2_error(const MatrixRowMaj U,
-                                int n, double h, double x_iniz, double y_iniz,
-                                std::function<double(double, double)> exact_u){
-            double sum = 0.0;
-            
-            for (int i = 1; i < n - 1; i++) {
-                for (int j = 1; j < n - 1; j++) {
-                    double x_val = x_iniz + j * h;
-                    double y_val = y_iniz + i * h;
-                    
-                    double diff = U(i, j) - exact_u(x_val, y_val);
-                    sum += (diff * diff);
+        double operator()(double x, double y) const {
+            thread_local mu::Parser local_parser;
+            thread_local double local_x = 0.0;
+            thread_local double local_y = 0.0;
+            thread_local bool initialized = false;
+
+            if (!initialized) {
+                try {
+                    local_parser.SetExpr(expression);
+                    local_parser.DefineVar("x", &local_x);
+                    local_parser.DefineVar("y", &local_y);
+                    local_parser.DefineConst("pi", M_PI);
+                    initialized = true;
+                } catch (mu::Parser::exception_type &e) {
+                    std::cerr << "[Rank " << get_mpi_rank() << "] muParser initialization error: " 
+                              << e.GetMsg() << std::endl;
+                    MPI_Abort(MPI_COMM_WORLD, 1);
                 }
             }
-            
-            return std::sqrt(h * sum);
+
+            local_x = x;
+            local_y = y;
+
+            try {
+                return local_parser.Eval();
+            } catch (mu::Parser::exception_type &e) {
+                std::cerr << "[Rank " << get_mpi_rank() << "] muParser evaluation error: " 
+                          << e.GetMsg() << std::endl;
+                return 0.0;
+            }
         }
+    };
+
+    /**
+    * @brief Calculates the global discrete $L^2$ error norm of the numerical solution.
+    * * Computes the root-mean-square difference between the calculated matrix values 
+    * and the analytical function over all internal grid nodes:
+    * ||e||_{L^2} = \sqrt{h \cdot \sum_{i,j} (U_{i,j} - u(x_i, y_j))^2}
+    * * @note This function performs a local evaluation. If used in a parallel context, 
+    * it should only be executed on the **reconstructed global matrix (Rank 0)**.
+    * * @param U The fully assembled global solution matrix of type MatrixRowMaj.
+    * @param n The total number of grid points along each 2D dimension.
+    * @param h The uniform spatial discretization mesh step size ($h = \Delta x = \Delta y$).
+    * @param x_iniz The physical starting boundary coordinate along the $X$-axis.
+    * @param y_iniz The physical starting boundary coordinate along the $Y$-axis.
+    * @param exact_u A functional reference to the analytical solution function.
+    * @return The computed discrete $L^2$ error norm as a double.
+    */
+    double compute_L2_error(const parallel_jacobi::MatrixRowMaj U,
+                            int n, double h, double x_iniz, double y_iniz,
+                            std::function<double(double, double)> exact_u){
+        double sum = 0.0;
+        
+        for (int i = 1; i < n - 1; i++) {
+            for (int j = 1; j < n - 1; j++) {
+                double x_val = x_iniz + j * h;
+                double y_val = y_iniz + i * h;
+                
+                double diff = U(i, j) - exact_u(x_val, y_val);
+                sum += (diff * diff);
+            }
+        }
+        
+        return std::sqrt(h * sum);
     }
+}
 
 
-    #endif
+#endif

@@ -1,11 +1,10 @@
 #pragma once
+
 #ifndef VTK_EXPORTER_HPP
 #define VTK_EXPORTER_HPP
 
 #include "jacobi_solver.hpp"
-#include <iostream>
-#include <fstream>
-#include <string>
+
 
 /**
  * @file vtk_exporter.hpp
@@ -14,7 +13,7 @@
  * using post-processing software such as ParaView or VisIt.
  */
 
-namespace parallel_jacobi {
+namespace utils {
 
     /**
      * @brief Exports a 2D matrix solution to an ASCII VTK Legacy structured points file.
@@ -33,7 +32,7 @@ namespace parallel_jacobi {
      * @param h The uniform spatial discretization mesh spacing step size ($h = \Delta x = \Delta y$).
      */
     inline void export_vtk(const std::string& filename, 
-                           const MatrixRowMaj& U, 
+                           const parallel_jacobi::MatrixRowMaj& U, 
                            int n, double x_iniz, double y_iniz, double h) {
         
         std::ofstream file(filename);

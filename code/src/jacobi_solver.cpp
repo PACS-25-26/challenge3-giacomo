@@ -1,5 +1,5 @@
 #include "jacobi_solver.hpp"
-#include <iostream>
+
 
 namespace parallel_jacobi{
 
@@ -14,6 +14,7 @@ namespace parallel_jacobi{
 
         h = (x_fin - x_iniz) / (n - 1);
 
+        // Neighbours and row division per rank
         int base_rows = n / size;
         int remainder = n % size;
         local_rows = (rank < remainder) ? (base_rows + 1) : base_rows;
@@ -43,15 +44,13 @@ namespace parallel_jacobi{
             }
         }
 
-        // CORREZIONE: Distribuiamo le tabelle di comunicazione a tutti i processi
+        // Broadcasting of the matrices
         MPI_Bcast(sendcounts.data(), size, MPI_INT, 0, comm);
         MPI_Bcast(displs.data(), size, MPI_INT, 0, comm);
 
-        // Definizione delle matrici locali (Tutti i processi)
         U_loc0 = MatrixRowMaj::Zero(local_rows + 2, n);
         U_loc1 = MatrixRowMaj::Zero(local_rows + 2, n);
 
-        // Distribuzione dati iniziale (Tutti i processi partecipano)
         MPI_Scatterv(U_global.data(), sendcounts.data(), displs.data(), MPI_DOUBLE, 
                      &U_loc0(1, 0), local_rows * n, MPI_DOUBLE, 0, comm);
     }
@@ -72,14 +71,14 @@ namespace parallel_jacobi{
     }
 
     void JacobiSolver::exchange_halos() {
-        // 1. SHIFT VERSO IL BASSO
-        // Mando la mia ultima riga al vicino di sotto, e ricevo la riga dal vicino di sopra
+        // 1. Shift down
+        // Ranks send last row to the below rank and recieve the first row from it
         MPI_Sendrecv(&U_loc0(local_rows, 0), n, MPI_DOUBLE, down_neighbor, 0,
                      &U_loc0(0, 0),          n, MPI_DOUBLE, up_neighbor,   0,
                      comm, MPI_STATUS_IGNORE);
 
-        // 2. SHIFT VERSO L'ALTO
-        // Mando la mia prima riga al vicino di sopra, e ricevo la riga dal vicino di sotto
+        // 2. Shift up
+        // Ranks send first row to the up rank and recieve the last row from it
         MPI_Sendrecv(&U_loc0(1, 0),              n, MPI_DOUBLE, up_neighbor,   1,
                      &U_loc0(local_rows + 1, 0), n, MPI_DOUBLE, down_neighbor, 1,
                      comm, MPI_STATUS_IGNORE);
@@ -128,19 +127,17 @@ namespace parallel_jacobi{
             MPI_Allreduce(&flag, &flag_glob, 1, MPI_INT, MPI_PROD, comm);
             
             if (rank == 0 && k % 100 == 0) {
-                std::cout << "Iterazione: " << k << " | Errore Corrente: " << err << std::endl;
+                std::cout << "Iteration: " << k << " | Current error: " << err << std::endl;
             }
             k++;
         }
 
-        if (rank == 0) std::cout << "Calcolo completato in " << k << " iterazioni. Avvio Gatherv..." << std::endl;
+        if (rank == 0) std::cout << "Computed in " << k << " iterations." << std::endl;
         
-        // Raccolta dati finale: prendiamo i dati da U_loc0(1,0)
         MPI_Gatherv(&U_loc0(1, 0), local_rows * n, MPI_DOUBLE, 
                     U_global.data(), sendcounts.data(), displs.data(), 
                     MPI_DOUBLE, 0, comm);
-                    
-        if (rank == 0) std::cout << "Gatherv terminata con successo!" << std::endl;
+
     }
 
     MatrixRowMaj JacobiSolver::get_global_matrix() const {

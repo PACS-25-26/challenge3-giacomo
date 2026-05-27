@@ -1,10 +1,8 @@
 #include "jacobi_solver.hpp"
 #include "vtk_exporter.hpp"
+#include "utils.hpp"
 #include "GetPot"
-#include "forcing_parser.hpp"
-#include <functional>
-#include <cmath>
-#include <iostream>
+
 
 int main (int argc, char* argv[])
 {
@@ -12,7 +10,7 @@ int main (int argc, char* argv[])
     
     int rank, size;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &size); // Retrieve the total number of MPI processes
+    MPI_Comm_size(MPI_COMM_WORLD, &size); 
 
     // 1. GetPot initialization
     GetPot command_line(argc, argv);
@@ -24,8 +22,9 @@ int main (int argc, char* argv[])
     int max_iters = datafile("Jacobi_solver_parameters/max_iters", 10000);
     double tolerance = datafile("Jacobi_solver_parameters/tolerance", 1e-6);
 
-    // 3. Read the forcing term expression as a string
+    // 3. Read the forcing term and boundary condition expression as a string
     std::string force_expr = datafile("simulazione/forcing_term", "8*pi*pi*sin(2*pi*x)*sin(2*pi*y)");
+    std::string bc_expr = datafile("simulazione/boundary_condition", "sin(2*pi*x)*sin(2*pi*y)");
 
     // Control print only for Rank 0
     if (rank == 0) {
@@ -34,15 +33,13 @@ int main (int argc, char* argv[])
         std::cout << "Maximum iterations: " << max_iters << std::endl;
         std::cout << "Tolerance: " << tolerance << std::endl;
         std::cout << "Forcing term: " << force_expr << std::endl;
+        std::cout << "Boundary condition: " << bc_expr << std::endl;
         std::cout << "Total MPI processes: " << size << std::endl;
         std::cout << "========================================" << std::endl;
     }
 
-    utils::ForcingFunction force(force_expr);
-
-    std::function<double(double, double)> bc = [](double x, double y) { 
-        return 0.0; 
-    };
+    utils::Function force(force_expr);
+    utils::Function bc(bc_expr);
 
     MPI_Comm comm = MPI_COMM_WORLD;
 
@@ -64,7 +61,7 @@ int main (int argc, char* argv[])
         double h = (x_f - x_i) / (n - 1);
         
         // Call the VTK exporter
-        parallel_jacobi::export_vtk("solution.vtk", result, n, x_i, y_i, h);
+        utils::export_vtk("solution.vtk", result, n, x_i, y_i, h);
     }
 
     MPI_Finalize();

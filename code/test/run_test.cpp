@@ -1,13 +1,8 @@
 #include "jacobi_solver.hpp"
 #include "vtk_exporter.hpp"
 #include "GetPot"
-#include "forcing_parser.hpp"
 #include "utils.hpp"
-#include <functional>
-#include <cmath>
-#include <iostream>
 #include <filesystem>
-#include <fstream>
 
 void write_in_file(double l2_err, double time, int size, int n);
     
@@ -78,7 +73,7 @@ int main (int argc, char* argv[])
         // Only Rank 0 
         if (rank == 0) {
             auto U = solver.get_global_matrix();
-            double l2_err = parallel_jacobi::compute_L2_error(U, n, h , x_i, y_i, u_exact);
+            double l2_err = utils::compute_L2_error(U, n, h , x_i, y_i, u_exact);
             double time = (end_time - start_time);
             std::cout << size << "," << n << "," << (end_time - start_time) << "," << l2_err << std::endl;
 
