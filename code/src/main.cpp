@@ -24,7 +24,7 @@ int main (int argc, char* argv[])
 
     // 3. Read the forcing term and boundary condition expression as a string
     std::string force_expr = datafile("simulazione/forcing_term", "8*pi*pi*sin(2*pi*x)*sin(2*pi*y)");
-    std::string bc_expr = datafile("simulazione/boundary_condition", "sin(2*pi*x)*sin(2*pi*y)");
+    std::string bc_expr = datafile("simulazione/boundary_condition", "0.0");
 
     // Control print only for Rank 0
     if (rank == 0) {
