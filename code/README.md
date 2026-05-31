@@ -3,7 +3,7 @@
 Our code is divided into three main folders: 
 * 'include' contains the hpp files
 * 'src' contains all the cpp files including the main
-* 'test' ... to complete
+* 'test' contains the scripts, the source files, and the generated data for the scalability tests, along with the analysis reports.
 
 Before running the code, the user can choose different values for some parameters of the problem (as num_elements, max_iters, tolerance, forcing term): it's enough to go in the file 'parameters.pot', change the values and then digit **make run**. It's also important that user's device has all the tools required, in particoular Eigen and muParser.  
 
