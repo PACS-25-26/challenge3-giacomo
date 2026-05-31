@@ -6,7 +6,33 @@
 #include <sstream>
 
 
+/**
+ * @file run_test.cpp
+ * @brief Spatial convergence and accuracy test for the parallel Jacobi Poisson solver.
+ * * @details This test script performs a Grid Convergence Study by solving the 2D 
+ * Poisson equation on progressively refined grids (from n = 16 to n = 256).
+ * It leverages a hybrid MPI + OpenMP approach, calculates the L2 error 
+ * against the analytical exact solution, and logs the execution metrics.
+ */
+
+ /**
+ * @brief Appends simulation results (metrics and errors) to a shared CSV file.
+ * * @note This function must only be executed by Rank 0 in an MPI environment to
+ * prevent write race conditions.
+ * * @param size Total number of MPI processes used.
+ * @param n Grid resolution (number of subdivisions per dimension).
+ * @param L2_err The computed L2 norm error against the exact solution.
+ * @param time The solver execution time measured in seconds via MPI_Wtime.
+ */
+
 void write_in_file(int size, int n, double L2_err, double time);
+
+/**
+ * @brief Main entry point for the grid refinement test suite.
+ * * @param argc Program argument count.
+ * @param argv Program argument vector.
+ * @return int Execution status (0 for success).
+ */
 
 int main (int argc, char* argv[])
 {

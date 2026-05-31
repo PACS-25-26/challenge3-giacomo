@@ -1,2 +1,13 @@
-\chapter{README}
-\hypertarget{md_test_2README}{}\label{md_test_2README}\index{README@{README}}
+\chapter{Compilation and Execution (Test Directory)}
+\hypertarget{md_test_2README}{}\label{md_test_2README}\index{Compilation and Execution (Test Directory)@{Compilation and Execution (Test Directory)}}
+\label{md_test_2README_autotoc_md0}%
+\Hypertarget{md_test_2README_autotoc_md0}%
+ To run the accuracy and parallel scalability tests, you must compile and execute the code directly from within the {\ttfamily test} directory. The local {\ttfamily Makefile} is configured to automatically link the test source with the core solver located in the parent directory.
+
+Open your terminal and navigate to the test folder\+: {\ttfamily cd code/test}
+
+To compile the specific test executable (run\+\_\+test), simply run\+: {\ttfamily make}
+
+An automated Bash script is provided to handle the strong scaling tests across multiple core counts (1, 2, 4, 8 cores). First, ensure the script has execution permissions\+: {\ttfamily chmod +x run\+\_\+scalability.\+sh} Then, execute it\+: {\ttfamily ./run\+\_\+scalability.sh}
+
+Depending on your needs, you can perform a partial or full cleanup of the directory\+: only object files\+: {\ttfamily clean} also the data folder\+: {\ttfamily distclean} 

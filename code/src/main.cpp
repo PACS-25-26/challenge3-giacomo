@@ -23,8 +23,8 @@ int main (int argc, char* argv[])
     double tolerance = datafile("Jacobi_solver_parameters/tolerance", 1e-6);
 
     // 3. Read the forcing term and boundary condition expression as a string
-    std::string force_expr = datafile("simulazione/forcing_term", "8*pi*pi*sin(2*pi*x)*sin(2*pi*y)");
-    std::string bc_expr = datafile("simulazione/boundary_condition", "0.0");
+    std::string force_expr = datafile("Jacobi_solver_parameters/forcing_term", "8*pi*pi*sin(2*pi*x)*sin(2*pi*y)");
+    std::string bc_expr = datafile("Jacobi_solver_parameters/boundary_condition", "0.0");
 
     // Control print only for Rank 0
     if (rank == 0) {

@@ -1,0 +1,80 @@
+\doxysection{utils\+::Function Class Reference}
+\hypertarget{classutils_1_1Function}{}\label{classutils_1_1Function}\index{utils::Function@{utils::Function}}
+
+
+Functor to dinamically evaluate 2D mathematical expressions.  
+
+
+
+
+{\ttfamily \#include $<$utils.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classutils_1_1Function_ab85455f22c2dd7dda75af0374b754b28}\label{classutils_1_1Function_ab85455f22c2dd7dda75af0374b754b28} 
+{\bfseries Function} ()
+\begin{DoxyCompactList}\small\item\em Default constructor. Initializes the function expression to a constant "{}0.\+0"{}. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classutils_1_1Function_a7b7f8215d874a0c24f35c001ae664e38}{Function}} (const std\+::string \&expr)
+\begin{DoxyCompactList}\small\item\em Main constructor that initializes the function with a custom expression. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classutils_1_1Function_a7c1f050eee5e509fc2b45bcfa2dc0955}{operator()}} (double x, double y) const
+\begin{DoxyCompactList}\small\item\em Overload of the call operator to evaluate the function at given coordinates. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Functor to dinamically evaluate 2D mathematical expressions. 
+
+
+\begin{DoxyItemize}
+\item This class uses the mu\+Parser library to interpret text strings as mathematical functions f(x,y) 
+\end{DoxyItemize}
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classutils_1_1Function_a7b7f8215d874a0c24f35c001ae664e38}\label{classutils_1_1Function_a7b7f8215d874a0c24f35c001ae664e38} 
+\index{utils::Function@{utils::Function}!Function@{Function}}
+\index{Function@{Function}!utils::Function@{utils::Function}}
+\doxysubsubsection{\texorpdfstring{Function()}{Function()}}
+{\footnotesize\ttfamily utils\+::\+Function\+::\+Function (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{expr }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}}
+
+
+
+Main constructor that initializes the function with a custom expression. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em expr} & The string containing the mathematical expression (e.\+g., "{}sin(x)\texorpdfstring{$\ast$}{*}cos(y)"{}). \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classutils_1_1Function_a7c1f050eee5e509fc2b45bcfa2dc0955}\label{classutils_1_1Function_a7c1f050eee5e509fc2b45bcfa2dc0955} 
+\index{utils::Function@{utils::Function}!operator()@{operator()}}
+\index{operator()@{operator()}!utils::Function@{utils::Function}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}}
+{\footnotesize\ttfamily double utils\+::\+Function\+::operator() (\begin{DoxyParamCaption}\item[{double}]{x,  }\item[{double}]{y }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Overload of the call operator to evaluate the function at given coordinates. 
+
+
+\begin{DoxyItemize}
+\item This operator makes the class a callable Functor. It is thread-\/safe because it instantiates internal parser variables as {\ttfamily thread\+\_\+local}, allowing multiple Open\+MP threads to call it concurrently without race conditions.
+\item If mu\+Parser initialization fails, it aborts the entire MPI environment. If evaluation fails, it prints an error message and returns 0.\+0.
+\item 
+\begin{DoxyParams}{Parameters}
+{\em x} & The spatial coordinate \$x\$. \\
+\hline
+{\em y} & The spatial coordinate \$y\$. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The evaluated result of the mathematical expression as a double. 
+\end{DoxyReturn}
+
+\end{DoxyItemize}
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/\mbox{\hyperlink{utils_8hpp}{utils.\+hpp}}\end{DoxyCompactItemize}

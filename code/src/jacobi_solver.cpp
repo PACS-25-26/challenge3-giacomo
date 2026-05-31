@@ -59,8 +59,8 @@ namespace parallel_jacobi{
         U_global.setZero();
         #pragma omp parallel for
         for (int j = 0; j < n; j++) {
-            U_global(0, j) = g(x_iniz + j * h, y_fin);
-            U_global(n - 1, j) = g(x_iniz + j * h, y_iniz);
+            U_global(0, j) = g(x_iniz + j * h, y_iniz);
+            U_global(n - 1, j) = g(x_iniz + j * h, y_fin);
         }
 
         #pragma omp parallel for
@@ -117,10 +117,11 @@ namespace parallel_jacobi{
         double err = tolerance + 1.0;
 
         while (!flag_glob && k < max_iters) {
+            flag = 0;
             exchange_halos();
             compute_step();
             err = compute_error_and_update();
-            
+
             if (err < tolerance)
                 flag = 1;
                 

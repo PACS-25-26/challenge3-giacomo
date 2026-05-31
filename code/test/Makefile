@@ -29,9 +29,9 @@ $(OBJ_DIR):
 .PHONY: clean
 clean:
 	rm -rf $(OBJ_DIR) $(EXEC) 
-	@echo "Clean completed."
+	@echo "Clean completed: object file and executable removed."
 
 .PHONY: distclean
 distclean: clean
 	rm -rf ./data 
-	@echo "Distclean completed."
+	@echo "Distclean completed: data folder removed."

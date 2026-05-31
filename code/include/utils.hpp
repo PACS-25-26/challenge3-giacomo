@@ -72,15 +72,16 @@ namespace utils{
             thread_local mu::Parser local_parser;
             thread_local double local_x = 0.0;
             thread_local double local_y = 0.0;
-            thread_local bool initialized = false;
+            thread_local std::string initialized_for = "";
 
-            if (!initialized) {
+            if (initialized_for != expression) {
                 try {
+                    local_parser.ClearVar();
                     local_parser.SetExpr(expression);
                     local_parser.DefineVar("x", &local_x);
                     local_parser.DefineVar("y", &local_y);
                     local_parser.DefineConst("pi", M_PI);
-                    initialized = true;
+                    initialized_for = expression;
                 } catch (mu::Parser::exception_type &e) {
                     std::cerr << "[Rank " << get_mpi_rank() << "] muParser initialization error: " 
                               << e.GetMsg() << std::endl;

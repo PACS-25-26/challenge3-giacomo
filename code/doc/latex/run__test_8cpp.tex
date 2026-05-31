@@ -1,0 +1,85 @@
+\doxysection{test/run\+\_\+test.cpp File Reference}
+\hypertarget{run__test_8cpp}{}\label{run__test_8cpp}\index{test/run\_test.cpp@{test/run\_test.cpp}}
+
+
+Spatial convergence and accuracy test for the parallel Jacobi Poisson solver.  
+
+
+{\ttfamily \#include "{}jacobi\+\_\+solver.\+hpp"{}}\newline
+{\ttfamily \#include "{}vtk\+\_\+exporter.\+hpp"{}}\newline
+{\ttfamily \#include "{}Get\+Pot"{}}\newline
+{\ttfamily \#include "{}utils.\+hpp"{}}\newline
+{\ttfamily \#include $<$filesystem$>$}\newline
+{\ttfamily \#include $<$sstream$>$}\newline
+Include dependency graph for run\+\_\+test.\+cpp\+:
+% FIG 0
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{run__test_8cpp_acbc9f4397f842da6b89b4da83e545c9d}{write\+\_\+in\+\_\+file}} (int size, int n, double L2\+\_\+err, double time)
+\begin{DoxyCompactList}\small\item\em Appends simulation results (metrics and errors) to a shared CSV file. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{run__test_8cpp_a0ddf1224851353fc92bfbff6f499fa97}{main}} (int argc, char \texorpdfstring{$\ast$}{*}argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Main entry point for the grid refinement test suite. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Spatial convergence and accuracy test for the parallel Jacobi Poisson solver. 
+
+
+\begin{DoxyItemize}
+\item This test script performs a Grid Convergence Study by solving the 2D Poisson equation on progressively refined grids (from n = 16 to n = 256). It leverages a hybrid MPI + Open\+MP approach, calculates the L2 error against the analytical exact solution, and logs the execution metrics. 
+\end{DoxyItemize}
+
+\doxysubsection{Function Documentation}
+\Hypertarget{run__test_8cpp_a0ddf1224851353fc92bfbff6f499fa97}\label{run__test_8cpp_a0ddf1224851353fc92bfbff6f499fa97} 
+\index{run\_test.cpp@{run\_test.cpp}!main@{main}}
+\index{main@{main}!run\_test.cpp@{run\_test.cpp}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char \texorpdfstring{$\ast$}{*}}]{argv\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Main entry point for the grid refinement test suite. 
+
+
+\begin{DoxyItemize}
+\item 
+\begin{DoxyParams}{Parameters}
+{\em argc} & Program argument count. \\
+\hline
+{\em argv} & Program argument vector. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int Execution status (0 for success). 
+\end{DoxyReturn}
+
+\end{DoxyItemize}\Hypertarget{run__test_8cpp_acbc9f4397f842da6b89b4da83e545c9d}\label{run__test_8cpp_acbc9f4397f842da6b89b4da83e545c9d} 
+\index{run\_test.cpp@{run\_test.cpp}!write\_in\_file@{write\_in\_file}}
+\index{write\_in\_file@{write\_in\_file}!run\_test.cpp@{run\_test.cpp}}
+\doxysubsubsection{\texorpdfstring{write\_in\_file()}{write\_in\_file()}}
+{\footnotesize\ttfamily void write\+\_\+in\+\_\+file (\begin{DoxyParamCaption}\item[{int}]{size,  }\item[{int}]{n,  }\item[{double}]{L2\+\_\+err,  }\item[{double}]{time }\end{DoxyParamCaption})}
+
+
+
+Appends simulation results (metrics and errors) to a shared CSV file. 
+
+
+\begin{DoxyItemize}
+\item \begin{DoxyNote}{Note}
+This function must only be executed by Rank 0 in an MPI environment to prevent write race conditions.
+\end{DoxyNote}
+
+\item 
+\begin{DoxyParams}{Parameters}
+{\em size} & Total number of MPI processes used. \\
+\hline
+{\em n} & Grid resolution (number of subdivisions per dimension). \\
+\hline
+{\em L2\+\_\+err} & The computed L2 norm error against the exact solution. \\
+\hline
+{\em time} & The solver execution time measured in seconds via MPI\+\_\+\+Wtime. \\
+\hline
+\end{DoxyParams}
+
+\end{DoxyItemize}
