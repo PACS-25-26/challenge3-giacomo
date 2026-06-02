@@ -1,0 +1,37 @@
+\doxysection{parallel\+\_\+jacobi Namespace Reference}
+\hypertarget{namespaceparallel__jacobi}{}\label{namespaceparallel__jacobi}\index{parallel\_jacobi@{parallel\_jacobi}}
+
+
+Namespace housing the parallel Jacobi solver implementation and related types.  
+
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classparallel__jacobi_1_1JacobiSolver}{Jacobi\+Solver}}
+\begin{DoxyCompactList}\small\item\em A parallel 2D Jacobi iterative solver utilizing hybrid MPI + Open\+MP parallelization. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+using \mbox{\hyperlink{namespaceparallel__jacobi_ab5c561662ce0d744055ad8395c9f672d}{Matrix\+Row\+Maj}} = Eigen\+::\+Matrix$<$ double, Eigen\+::\+Dynamic, Eigen\+::\+Dynamic, Eigen\+::\+Row\+Major $>$
+\begin{DoxyCompactList}\small\item\em Type alias for a dynamically-\/sized Eigen matrix stored in Row-\/\+Major order. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Namespace housing the parallel Jacobi solver implementation and related types. 
+
+\doxysubsection{Typedef Documentation}
+\Hypertarget{namespaceparallel__jacobi_ab5c561662ce0d744055ad8395c9f672d}\label{namespaceparallel__jacobi_ab5c561662ce0d744055ad8395c9f672d} 
+\index{parallel\_jacobi@{parallel\_jacobi}!MatrixRowMaj@{MatrixRowMaj}}
+\index{MatrixRowMaj@{MatrixRowMaj}!parallel\_jacobi@{parallel\_jacobi}}
+\doxysubsubsection{\texorpdfstring{MatrixRowMaj}{MatrixRowMaj}}
+{\footnotesize\ttfamily using \mbox{\hyperlink{namespaceparallel__jacobi_ab5c561662ce0d744055ad8395c9f672d}{parallel\+\_\+jacobi\+::\+Matrix\+Row\+Maj}} = typedef Eigen\+::\+Matrix$<$double, Eigen\+::\+Dynamic, Eigen\+::\+Dynamic, Eigen\+::\+Row\+Major$>$}
+
+
+
+Type alias for a dynamically-\/sized Eigen matrix stored in Row-\/\+Major order. 
+
+
+\begin{DoxyItemize}
+\item Row-\/major layout is highly recommended here to optimize memory locality during MPI halo exchanges (sending/receiving continuous row blocks). 
+\end{DoxyItemize}

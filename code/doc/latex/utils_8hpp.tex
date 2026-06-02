@@ -1,0 +1,33 @@
+\doxysection{include/utils.hpp File Reference}
+\hypertarget{utils_8hpp}{}\label{utils_8hpp}\index{include/utils.hpp@{include/utils.hpp}}
+
+
+Mathematical utility functions and error metrics for verification.  
+
+
+{\ttfamily \#include "{}mu\+Parser.\+h"{}}\newline
+{\ttfamily \#include "{}jacobi\+\_\+solver.\+hpp"{}}\newline
+Include dependency graph for utils.\+hpp\+:
+% FIG 0
+This graph shows which files directly or indirectly include this file\+:
+% FIG 1
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classutils_1_1Function}{utils\+::\+Function}}
+\begin{DoxyCompactList}\small\item\em Functor to dinamically evaluate 2D mathematical expressions. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \mbox{\hyperlink{namespaceutils}{utils}}
+\begin{DoxyCompactList}\small\item\em Namespace for utility classes and helper functions. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+double \mbox{\hyperlink{namespaceutils_aade566eceefdb489717da3180e391c9b}{utils\+::compute\+\_\+\+L2\+\_\+error}} (const \mbox{\hyperlink{namespaceparallel__jacobi_ab5c561662ce0d744055ad8395c9f672d}{parallel\+\_\+jacobi\+::\+Matrix\+Row\+Maj}} U, int n, double h, double x\+\_\+iniz, double y\+\_\+iniz, std\+::function$<$ double(double, double)$>$ exact\+\_\+u)
+\begin{DoxyCompactList}\small\item\em Calculates the global discrete \$L\texorpdfstring{$^\wedge$}{\string^}2\$ error norm of the numerical solution. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Mathematical utility functions and error metrics for verification. 
+

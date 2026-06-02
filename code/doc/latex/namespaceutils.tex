@@ -1,0 +1,95 @@
+\doxysection{utils Namespace Reference}
+\hypertarget{namespaceutils}{}\label{namespaceutils}\index{utils@{utils}}
+
+
+Namespace for utility classes and helper functions.  
+
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classutils_1_1Function}{Function}}
+\begin{DoxyCompactList}\small\item\em Functor to dinamically evaluate 2D mathematical expressions. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+double \mbox{\hyperlink{namespaceutils_aade566eceefdb489717da3180e391c9b}{compute\+\_\+\+L2\+\_\+error}} (const \mbox{\hyperlink{namespaceparallel__jacobi_ab5c561662ce0d744055ad8395c9f672d}{parallel\+\_\+jacobi\+::\+Matrix\+Row\+Maj}} U, int n, double h, double x\+\_\+iniz, double y\+\_\+iniz, std\+::function$<$ double(double, double)$>$ exact\+\_\+u)
+\begin{DoxyCompactList}\small\item\em Calculates the global discrete \$L\texorpdfstring{$^\wedge$}{\string^}2\$ error norm of the numerical solution. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceutils_aaa7a50d1ea2a22dda099061265c7c087}{export\+\_\+vtk}} (const std\+::string \&filename, const \mbox{\hyperlink{namespaceparallel__jacobi_ab5c561662ce0d744055ad8395c9f672d}{parallel\+\_\+jacobi\+::\+Matrix\+Row\+Maj}} \&U, int n, double x\+\_\+iniz, double y\+\_\+iniz, double h)
+\begin{DoxyCompactList}\small\item\em Exports a 2D matrix solution to an ASCII VTK Legacy structured points file. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Namespace for utility classes and helper functions. 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{namespaceutils_aade566eceefdb489717da3180e391c9b}\label{namespaceutils_aade566eceefdb489717da3180e391c9b} 
+\index{utils@{utils}!compute\_L2\_error@{compute\_L2\_error}}
+\index{compute\_L2\_error@{compute\_L2\_error}!utils@{utils}}
+\doxysubsubsection{\texorpdfstring{compute\_L2\_error()}{compute\_L2\_error()}}
+{\footnotesize\ttfamily double utils\+::compute\+\_\+\+L2\+\_\+error (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{namespaceparallel__jacobi_ab5c561662ce0d744055ad8395c9f672d}{parallel\+\_\+jacobi\+::\+Matrix\+Row\+Maj}}}]{U,  }\item[{int}]{n,  }\item[{double}]{h,  }\item[{double}]{x\+\_\+iniz,  }\item[{double}]{y\+\_\+iniz,  }\item[{std\+::function$<$ double(double, double)$>$}]{exact\+\_\+u }\end{DoxyParamCaption})}
+
+
+
+Calculates the global discrete \$L\texorpdfstring{$^\wedge$}{\string^}2\$ error norm of the numerical solution. 
+
+
+\begin{DoxyItemize}
+\item Computes the root-\/mean-\/square difference between the calculated matrix values and the analytical function over all internal grid nodes\+: \texorpdfstring{$\vert$}{|}\texorpdfstring{$\vert$}{|}e\texorpdfstring{$\vert$}{|}\texorpdfstring{$\vert$}{|}\+\_\+\{L\texorpdfstring{$^\wedge$}{\string^}2\} = \textbackslash{}sqrt\{h \textbackslash{}cdot \textbackslash{}sum\+\_\+\{i,j\} (U\+\_\+\{i,j\} -\/ u(x\+\_\+i, y\+\_\+j))\texorpdfstring{$^\wedge$}{\string^}2\}
+\item \begin{DoxyNote}{Note}
+This function performs a local evaluation. If used in a parallel context, it should only be executed on the {\bfseries{reconstructed global matrix (Rank 0)}}.
+\end{DoxyNote}
+
+\item 
+\begin{DoxyParams}{Parameters}
+{\em U} & The fully assembled global solution matrix of type Matrix\+Row\+Maj. \\
+\hline
+{\em n} & The total number of grid points along each 2D dimension. \\
+\hline
+{\em h} & The uniform spatial discretization mesh step size (\$h = \textbackslash{}\+Delta x = \textbackslash{}\+Delta y\$). \\
+\hline
+{\em x\+\_\+iniz} & The physical starting boundary coordinate along the \$\+X\$-\/axis. \\
+\hline
+{\em y\+\_\+iniz} & The physical starting boundary coordinate along the \$\+Y\$-\/axis. \\
+\hline
+{\em exact\+\_\+u} & A functional reference to the analytical solution function. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The computed discrete \$L\texorpdfstring{$^\wedge$}{\string^}2\$ error norm as a double. 
+\end{DoxyReturn}
+
+\end{DoxyItemize}\Hypertarget{namespaceutils_aaa7a50d1ea2a22dda099061265c7c087}\label{namespaceutils_aaa7a50d1ea2a22dda099061265c7c087} 
+\index{utils@{utils}!export\_vtk@{export\_vtk}}
+\index{export\_vtk@{export\_vtk}!utils@{utils}}
+\doxysubsubsection{\texorpdfstring{export\_vtk()}{export\_vtk()}}
+{\footnotesize\ttfamily void utils\+::export\+\_\+vtk (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{filename,  }\item[{const \mbox{\hyperlink{namespaceparallel__jacobi_ab5c561662ce0d744055ad8395c9f672d}{parallel\+\_\+jacobi\+::\+Matrix\+Row\+Maj}} \&}]{U,  }\item[{int}]{n,  }\item[{double}]{x\+\_\+iniz,  }\item[{double}]{y\+\_\+iniz,  }\item[{double}]{h }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Exports a 2D matrix solution to an ASCII VTK Legacy structured points file. 
+
+
+\begin{DoxyItemize}
+\item This function creates a structured grid representation (\$N \textbackslash{}times N \textbackslash{}times 1\$) where the Z-\/dimension is flattened. It maps the row-\/major Eigen matrix data into the coordinate system expected by VTK format rules.
+\item \begin{DoxyNote}{Note}
+VTK structures iterate over \$\+X\$ coordinates fastest, then \$\+Y\$, then \$\+Z\$. Given that the matrix row index \$i\$ represents spatial grid height (\$\+Y\$-\/axis) and column index \$j\$ represents width (\$\+X\$-\/axis), the internal loop correctly unrolls the sequential output stream to maintain physical spatial orientation.
+\end{DoxyNote}
+
+\item 
+\begin{DoxyParams}{Parameters}
+{\em filename} & The output path and name of the {\ttfamily .vtk} file to create. \\
+\hline
+{\em U} & The computed solution matrix of type Matrix\+Row\+Maj to write. \\
+\hline
+{\em n} & The total number of grid resolution points along each 2D dimension (\$N \textbackslash{}times N\$). \\
+\hline
+{\em x\+\_\+iniz} & The physical starting boundary coordinate along the \$\+X\$-\/axis. \\
+\hline
+{\em y\+\_\+iniz} & The physical starting boundary coordinate along the \$\+Y\$-\/axis. \\
+\hline
+{\em h} & The uniform spatial discretization mesh spacing step size (\$h = \textbackslash{}\+Delta x = \textbackslash{}\+Delta y\$). \\
+\hline
+\end{DoxyParams}
+
+\end{DoxyItemize}

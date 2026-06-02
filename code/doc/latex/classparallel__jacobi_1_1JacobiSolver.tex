@@ -1,0 +1,114 @@
+\doxysection{parallel\+\_\+jacobi\+::Jacobi\+Solver Class Reference}
+\hypertarget{classparallel__jacobi_1_1JacobiSolver}{}\label{classparallel__jacobi_1_1JacobiSolver}\index{parallel\_jacobi::JacobiSolver@{parallel\_jacobi::JacobiSolver}}
+
+
+A parallel 2D Jacobi iterative solver utilizing hybrid MPI + Open\+MP parallelization.  
+
+
+
+
+{\ttfamily \#include $<$jacobi\+\_\+solver.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classparallel__jacobi_1_1JacobiSolver_a23804fc263d8a7081d6c069aaffeb22b}{Jacobi\+Solver}} (int n, double x\+\_\+i, double y\+\_\+i, double x\+\_\+f, double y\+\_\+f, std\+::function$<$ double(double, double)$>$ force, std\+::function$<$ double(double, double)$>$ bc, MPI\+\_\+\+Comm communicator)
+\begin{DoxyCompactList}\small\item\em Constructor for the \doxylink{classparallel__jacobi_1_1JacobiSolver}{Jacobi\+Solver} class. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classparallel__jacobi_1_1JacobiSolver_a28cc3655e447b106bd2c149c9838d0b5}{solve}} (int max\+\_\+iters, double tolerance)
+\begin{DoxyCompactList}\small\item\em Executes the iterative Jacobi numerical solution loop. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespaceparallel__jacobi_ab5c561662ce0d744055ad8395c9f672d}{Matrix\+Row\+Maj}} \mbox{\hyperlink{classparallel__jacobi_1_1JacobiSolver_a1c6068dc0f1b5fec87ddff1d9017ba61}{get\+\_\+global\+\_\+matrix}} () const
+\begin{DoxyCompactList}\small\item\em Gathers and retrieves the fully reconstructed global solution matrix. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A parallel 2D Jacobi iterative solver utilizing hybrid MPI + Open\+MP parallelization. 
+
+
+\begin{DoxyItemize}
+\item This class solves elliptic partial differential equations (like the Poisson equation) on a uniform 2D grid. The domain is decomposed horizontally (by row blocks) among MPI processes, while internal matrix operations within each process can be accelerated using Open\+MP threads. 
+\end{DoxyItemize}
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classparallel__jacobi_1_1JacobiSolver_a23804fc263d8a7081d6c069aaffeb22b}\label{classparallel__jacobi_1_1JacobiSolver_a23804fc263d8a7081d6c069aaffeb22b} 
+\index{parallel\_jacobi::JacobiSolver@{parallel\_jacobi::JacobiSolver}!JacobiSolver@{JacobiSolver}}
+\index{JacobiSolver@{JacobiSolver}!parallel\_jacobi::JacobiSolver@{parallel\_jacobi::JacobiSolver}}
+\doxysubsubsection{\texorpdfstring{JacobiSolver()}{JacobiSolver()}}
+{\footnotesize\ttfamily parallel\+\_\+jacobi\+::\+Jacobi\+Solver\+::\+Jacobi\+Solver (\begin{DoxyParamCaption}\item[{int}]{n,  }\item[{double}]{x\+\_\+i,  }\item[{double}]{y\+\_\+i,  }\item[{double}]{x\+\_\+f,  }\item[{double}]{y\+\_\+f,  }\item[{std\+::function$<$ double(double, double)$>$}]{force,  }\item[{std\+::function$<$ double(double, double)$>$}]{bc,  }\item[{MPI\+\_\+\+Comm}]{communicator }\end{DoxyParamCaption})}
+
+
+
+Constructor for the \doxylink{classparallel__jacobi_1_1JacobiSolver}{Jacobi\+Solver} class. 
+
+
+\begin{DoxyItemize}
+\item Handles domain partitioning, determines neighbor ranks, establishes local subgrid structures, and prepares internal memory buffers.
+\item 
+\begin{DoxyParams}{Parameters}
+{\em n} & Number of internal subdivisions per grid dimension. \\
+\hline
+{\em x\+\_\+i} & Starting X coordinate of the physical domain. \\
+\hline
+{\em y\+\_\+i} & Starting Y coordinate of the physical domain. \\
+\hline
+{\em x\+\_\+f} & Ending X coordinate of the physical domain. \\
+\hline
+{\em y\+\_\+f} & Ending Y coordinate of the physical domain. \\
+\hline
+{\em force} & Callable functional object representing the RHS source term \$f(x,y)\$. \\
+\hline
+{\em bc} & Callable functional object representing the Dirichlet boundary conditions \$g(x,y)\$. \\
+\hline
+{\em communicator} & The active MPI communicator context allocated for this solver. \\
+\hline
+\end{DoxyParams}
+
+\end{DoxyItemize}
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classparallel__jacobi_1_1JacobiSolver_a1c6068dc0f1b5fec87ddff1d9017ba61}\label{classparallel__jacobi_1_1JacobiSolver_a1c6068dc0f1b5fec87ddff1d9017ba61} 
+\index{parallel\_jacobi::JacobiSolver@{parallel\_jacobi::JacobiSolver}!get\_global\_matrix@{get\_global\_matrix}}
+\index{get\_global\_matrix@{get\_global\_matrix}!parallel\_jacobi::JacobiSolver@{parallel\_jacobi::JacobiSolver}}
+\doxysubsubsection{\texorpdfstring{get\_global\_matrix()}{get\_global\_matrix()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{namespaceparallel__jacobi_ab5c561662ce0d744055ad8395c9f672d}{Matrix\+Row\+Maj}} parallel\+\_\+jacobi\+::\+Jacobi\+Solver\+::get\+\_\+global\+\_\+matrix (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+
+
+Gathers and retrieves the fully reconstructed global solution matrix. 
+
+
+\begin{DoxyItemize}
+\item Triggers a collective {\ttfamily MPI\+\_\+\+Gatherv} call to pool discrete sub-\/matrices from all worker ranks.
+\item \begin{DoxyNote}{Note}
+The complete matrix assembly is only built on {\bfseries{Rank 0}}. Calling this on other ranks will yield an uninitialized/empty matrix block. 
+\end{DoxyNote}
+\begin{DoxyReturn}{Returns}
+The complete compiled Matrix\+Row\+Maj structure containing the global solution. 
+\end{DoxyReturn}
+
+\end{DoxyItemize}\Hypertarget{classparallel__jacobi_1_1JacobiSolver_a28cc3655e447b106bd2c149c9838d0b5}\label{classparallel__jacobi_1_1JacobiSolver_a28cc3655e447b106bd2c149c9838d0b5} 
+\index{parallel\_jacobi::JacobiSolver@{parallel\_jacobi::JacobiSolver}!solve@{solve}}
+\index{solve@{solve}!parallel\_jacobi::JacobiSolver@{parallel\_jacobi::JacobiSolver}}
+\doxysubsubsection{\texorpdfstring{solve()}{solve()}}
+{\footnotesize\ttfamily void parallel\+\_\+jacobi\+::\+Jacobi\+Solver\+::solve (\begin{DoxyParamCaption}\item[{int}]{max\+\_\+iters,  }\item[{double}]{tolerance }\end{DoxyParamCaption})}
+
+
+
+Executes the iterative Jacobi numerical solution loop. 
+
+
+\begin{DoxyItemize}
+\item The loop alternates between halo swaps, stencil updates, and residual checks until either the solution converges below the specified threshold or maximum iterations are met.
+\item 
+\begin{DoxyParams}{Parameters}
+{\em max\+\_\+iters} & Maximum number of allowed iterative steps to prevent infinite looping. \\
+\hline
+{\em tolerance} & Convergence criteria limit (\$L\texorpdfstring{$^\wedge$}{\string^}\textbackslash{}infty\$ residual error bound). \\
+\hline
+\end{DoxyParams}
+
+\end{DoxyItemize}
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/\mbox{\hyperlink{jacobi__solver_8hpp}{jacobi\+\_\+solver.\+hpp}}\item 
+src/jacobi\+\_\+solver.\+cpp\end{DoxyCompactItemize}
